@@ -115,7 +115,7 @@ They are not completely randomly distributed around 0 they are stacked above the
 
 ```{r fit-score_gender_fit}
 # fit model
-
+ 
 # tidy model output
 ```
 
