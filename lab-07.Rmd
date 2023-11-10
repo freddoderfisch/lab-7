@@ -91,7 +91,7 @@ score_bty_aug <- augment(score_bty_fit$fit)
 score_bty_aug %>%
 ggplot(mapping = aes(y = .resid, x = .fitted)) + geom_jitter() + geom_hline(yintercept = 0, linetype = "dashed") + labs(y = "residuals",                                                                            x = "predicted values")
 ```
-No a linear model is not an appropriate model as there are big residuals
+They are not completely randomly distributed around 0 they are stacked above the y intercept. 
 
 # Exercise 3: Simple Linear regression with a categorical predictor
 
