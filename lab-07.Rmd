@@ -24,75 +24,81 @@ evals<-read.csv("data/evals.csv", row.names=1)
 1.  Visualize the distribution of `score` in the dataframe `evals`.
 
 ```{r viz-score}
-# add code here
+evals %>%
+  ggplot(mapping = aes(x = score)) + geom_boxplot() + labs(
+    x = "Score",
+    title = "distribution of score")
 ```
-
-*Add your other details and narratives here.*
+The distribution is skewed towards the top end of the scale (5) as people will decide what course to take and therefore will generally take a course they enjoy and give it a high score.
 
 2.  Visualize and describe the relationship between `score` and `bty_avg` using `geom_point()` to represent the data. 
 
 ```{r scatterplot}
-# add code here
+evals %>%
+  ggplot(mapping = aes(x = score, y = bty_avg)) + geom_point()
+
+evals %>%
+  ggplot(mapping = aes(x = score, y = bty_avg)) + geom_jitter() + geom_smooth(method = lm)
 ```
 
-*Add your narrative and other details here.*
+jitter can be used on discrete variables to move the points slighty creating a small amount of random variation to the points and helping make the data easier to visualise and avoid plotting multiple points in the same place.
+
+There is arguably a slight positive correlation, but I don't think this is enough to validate that beauty affects the score.
 
 # Exercise 2: Simple Linear regression with a numerical predictor
 
 1. Fit a linear model called `score_bty_fit` to predict average professor evaluation `score` from average beauty rating (`bty_avg`). Print the regression output using `tidy()`.
 
-```{r fit-score_bty_fit, eval = FALSE}
-# remove eval = FALSE from the code chunk options after filling in the blanks
+```{r fit-score_bty_fit}
 score_bty_fit <- linear_reg() %>%
   set_engine("lm") %>%
-  fit(___ ~ ___, data = ___)
+  fit(score ~ bty_avg, data = evals)
 ```
 
-```{r tidy-score_bty_fit, eval = FALSE}
-# remove eval = FALSE from the code chunk options after filling in the blanks
-tidy(___)
+```{r tidy-score_bty_fit}
+tidy(score_bty_fit)
 ```
 
-*Add your linear model here. Don't worry too much about notation, you can use things like score-hat.*
+score = 0.0666bty_avg + 3.88
 
 2. Plot the data again using `geom_jitter()`, and add the regression line.
 
-```{r viz-score_bty_fit,eval=FALSE}
-# add your plot here. Hint, you can add the regression line using geom_smooth()
+```{r viz-score_bty_fit}
+evals %>%
+  ggplot(mapping = aes(y = score, x = bty_avg)) + geom_jitter() + geom_smooth(method = lm)
 ```
 
 3. Interpret the slope of the linear model in context of the data.
 
-*Add your interpretation here*
+The slope is positive but close to 0. This suggests that there is very little correlation between beauty and the rating of the professor. The standard error is also quite large therefore this model is not very accurate more data could be beneficial for a more accurate model.
 
 4. Interpret the intercept of the linear model in context of the data. Comment on whether or not the intercept makes sense in this context.
 
-*Add your interpretation here*
+The score is 3.88 when the beauty average given to a professor is 0. As the beauty average is a scale between 1 and 10 this makes little sence in this context.
 
 5. Determine the $R^2$ of the model and interpret it in the context of the data.
 
-```{r R2, eval = FALSE}
-# remove eval = FALSE from the code chunk options after filling in the blanks
-glance(___)$___
+```{r R2}
+glance(score_bty_fit)$r.squared
 ```
 
-*Add your interpretation here*
+very low value of R^2 therefore the linear model is very bad at predicting the score based on the beauty average.
 
 6. Make a plot of residuals vs. predicted values for the model above.
 
-```{r viz-score_bty_fit-diagnostic, eval = FALSE}
-# remove eval = FALSE from the code chunk options after filling in the blanks
+```{r viz-score_bty_fit-diagnostic}
 score_bty_aug <- augment(score_bty_fit$fit)
-
-ggplot(___) + ...
+score_bty_aug %>%
+ggplot(mapping = aes(y = .resid, x = .fitted)) + geom_jitter() + geom_hline(yintercept = 0, linetype = "dashed") + labs(y = "residuals",                                                                            x = "predicted values")
 ```
+No a linear model is not an appropriate model as there are big residuals
 
 # Exercise 3: Simple Linear regression with a categorical predictor
 
 0. Look at the variable rank, and determine the frequency of each category level.
 
 ```{r}
-# ... 
+
 ```
 
 1. Fit a new linear model called `score_rank_fit` to predict average professor evaluation `score` based on `rank` of the professor.
